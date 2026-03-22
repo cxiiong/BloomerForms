@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params
+export async function GET(req: Request, context: any) {
+  const { id } = context.params
 
   const res = await fetch(`${process.env.DASHBOARD_FORM_API}/${id}`, {
     headers: {
