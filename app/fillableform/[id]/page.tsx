@@ -46,7 +46,7 @@ export default function PublicFormPage() {
 
     async function fetchForm() {
       try {
-        const res = await fetch(`/api/forms/${formId}`)
+        const res = await fetch(`process.env.NEXT_PUBLIC_FORM_API}/${formId}`)
         if (!res.ok) throw new Error("Failed to fetch form")
         const data: FormRow = await res.json() 
         setForm(data)
@@ -113,7 +113,7 @@ export default function PublicFormPage() {
         answer,
       }))
 
-      const res = await fetch(`/api/forms/${formId}/submissions`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_FORM_SUBMIT_API}/${formId}/submissions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
