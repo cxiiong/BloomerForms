@@ -1,34 +1,30 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-export async function GET(
+export async function POST(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params
-
   if (!id) {
     return NextResponse.json({ error: "Missing form ID" }, { status: 400 })
   }
 
-  if (!process.env.DASHBOARD_FORM_API || !process.env.DASHBOARD_FORM_API_KEY) {
-    return NextResponse.json(
-      { error: "Missing DASHBOARD_FORM_API or DASHBOARD_FORM_API_KEY" },
-      { status: 500 }
-    )
-  }
-
   try {
-    const res = await fetch(`${process.env.DASHBOARD_FORM_API}/${id}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.DASHBOARD_FORM_API_KEY}`,
-      },
-    })
+    const res = await fetch(
+      `${process.env.DASHBOARD_FORM_API}/${id}/view`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.DASHBOARD_FORM_API_KEY}`,
+        },
+      }
+    )
 
     if (!res.ok) {
       const text = await res.text()
       return NextResponse.json(
-        { error: "Failed to fetch form", details: text },
+        { error: "Failed to increment view", details: text },
         { status: res.status }
       )
     }
@@ -36,7 +32,7 @@ export async function GET(
     const data = await res.json()
     return NextResponse.json(data)
   } catch (err) {
-    console.error("Fetch error:", err)
+    console.error(err)
     return NextResponse.json({ error: "Server error" }, { status: 500 })
   }
 }

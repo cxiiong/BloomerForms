@@ -59,6 +59,33 @@ export default function PublicFormPage() {
     fetchForm()
   }, [formId])
 
+  useEffect(() => {
+    if (!formId) return
+    const markView = async () => {
+      try {
+        const key = `view_${formId}`
+        const lastView = localStorage.getItem(key)
+
+        const now = Date.now()
+        const DAY = 1000 * 60 * 60 * 24
+
+        if (lastView && now - Number(lastView) < DAY) {
+          return
+        }
+
+        await fetch(`/api/forms/${formId}/view`, {
+          method: "POST",
+        })
+        
+        localStorage.setItem(key, String(now))
+      } catch (err) {
+        console.error("view tracking failed", err)
+      }
+    }
+
+    markView()
+  }, [formId])
+
   if (!form) return <p className="p-6">Loading form...</p>
 
   // Wait for session to load
